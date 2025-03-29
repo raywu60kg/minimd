@@ -1,0 +1,14 @@
+name = "minimd"
+main = "src/worker.ts"
+compatibility_date = "2024-02-20"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "minimd_db"
+database_id = "${D1_DATABASE_ID}"
+
+[build]
+command = "npm run build"
+
+[site]
+bucket = "./dist" 
