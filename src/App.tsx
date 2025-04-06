@@ -26,11 +26,19 @@ function App() {
     return saved ? JSON.parse(saved) : window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [isVimMode, setIsVimMode] = useState(() => {
+    const saved = localStorage.getItem('vimMode');
+    return saved ? JSON.parse(saved) : true;
+  });
 
   useEffect(() => {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
     document.documentElement.classList.toggle('dark', isDarkMode);
   }, [isDarkMode]);
+
+  useEffect(() => {
+    localStorage.setItem('vimMode', JSON.stringify(isVimMode));
+  }, [isVimMode]);
 
   useEffect(() => {
     fetchNotes();
@@ -88,6 +96,16 @@ function App() {
                 }`}
               >
                 {isPreviewMode ? 'Edit' : 'Preview'}
+              </button>
+              <button
+                onClick={() => setIsVimMode(!isVimMode)}
+                className={`px-4 py-2 rounded-lg ${
+                  isDarkMode
+                    ? 'bg-gray-700 text-white hover:bg-gray-600'
+                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                }`}
+              >
+                {isVimMode ? 'Normal Mode' : 'Vim Mode'}
               </button>
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
@@ -186,7 +204,7 @@ function App() {
                         height="100%"
                         theme={isDarkMode ? oneDark : githubLight}
                         extensions={[
-                          vim(),
+                          ...(isVimMode ? [vim()] : []),
                           markdown(),
                         ]}
                         onChange={value => {
